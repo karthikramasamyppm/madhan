@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Test</title>
+    <script src="web3.min.js"></script>
+	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+<style> 
+.first, .second,.third,.fourth,.fifty,.sixth {
+    padding: 1px;
+    text-align: center;
+    width:500px;
+    height:50px;
+    background-color:LightGray;
+    border: solid 5px #c3c3c3;
+}
+</style>
+   </head>
+  <body align="center" background="f1.jpeg">
+ <form >
+   <center>
+   <style>
+   p {
+    font-family: verdana;
+    font-size: 20px;
+    color:brown;
+     }
+   </style>
+   <h1>Token Wallet</h1>
+   <div class="first">Total Supply</div>
+   <p class="first" ><input id="b1" type="text"  placeholder="Token"/></p>
+   <p class="first"><input type="button" onclick="dp()" value="Deposit"><h1 id="b2"></h1><br></p>
+   <div class="second">Token Transaction</div>
+   <p class="second"><input id="b3" type="text" placeholder="receiver"/></p>
+   <p class="second"><input id="b4" type="text" placeholder="tokentransfer"/></p>
+   <p class="second"><input type="button" onclick="tr()" value="Transaction"><h1 id="b5"></h1><br></p>
+   <div class="third">Approval</div>
+   <p class="third"><input id="b6" type="text" placeholder="spender"/></p>
+   <p class="third"><input id="b7" type="text" placeholder="value"/></p>
+   <p class="third"><input type="button" onclick="ap()" value="Approve"><h1 id="b8"></h1><br></p>
+   <div class="fourth">Allowance</div>
+   <p class="fourth"><input id="b9" type="text" placeholder="owner"/></p>
+   <p class="fourth"><input id="b10" type="text" placeholder="spender"/></p>
+   <p class="fourth"><input type="button" onclick="allo()" value="Allowance"><h1 id="b11"></h1><br></p>
+   <div class="fifty">Transferfrom Approved User</div>
+   <p class="fifty"><input id="b12" type="text" placeholder="from"/></p>
+   <p class="fifty"><input id="b13" type="text" placeholder="to"/></p>
+   <p class="fifty"><input id="b14" type="text" placeholder="Token"/></p>
+   <p class="fifty"><input type="button" onclick="trans()" value="Transferfrom"><h1 id="b15"></h1><br></p>
+   <div class="sixth">Check Balance</div>
+   <p class="sixth"><input id="b16" type="text" placeholder="balcheck"/></p>
+   <p class="sixth"><input type="button" onclick="bal()" value="Balance"><h1 id="b17"></h1><br></p>
+<script> 
+$(function () {
+    $(".first, .second,.third,.fourth,.fifty,.sixth")
+        .filter("p")
+        .toggle()
+        .addBack()
+        .not("p")
+        .click(function (e) {
+            return $("." + e.target.className).not("div").slideToggle(0)
+    });
+});
+</script>
+   </center>
+   </form>
+   </body>
+   <script>
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+        var bank= web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_spender",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [
+			{
+				"name": "success",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "transferFrom",
+		"outputs": [
+			{
+				"name": "success",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_owner",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"name": "balance",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "reciver",
+				"type": "address"
+			},
+			{
+				"name": "transferamt",
+				"type": "uint256"
+			}
+		],
+		"name": "transfer",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "depo",
+				"type": "uint256"
+			}
+		],
+		"name": "totalSupply",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_owner",
+				"type": "address"
+			},
+			{
+				"name": "_spender",
+				"type": "address"
+			}
+		],
+		"name": "allowance",
+		"outputs": [
+			{
+				"name": "remaining",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "Transfer",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "_owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "_spender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "Approval",
+		"type": "event"
+	}
+]);
+     var sybex = bank.at('0x0b139e909f1b24a0a66f72dcf1a91c9eb68ed4f3');
+     
+     if(!web3.isConnected()) {
+  
+        console.log("Ok");
+        
+      } else {
+        console.log("no");
+      }
+      web3.version.getNetwork((err, netId) => {
+            switch (netId) {
+              case "1":
+                console.log('This is mainnet')
+                break
+              case "2":
+                console.log('This is the deprecated Morden test network.')
+                break
+              case "3":
+                console.log('This is the ropsten test network.')
+                break
+              case "4":
+                console.log('This is the Rinkeby test network.')
+                break
+              case "42":
+                console.log('This is the Kovan test network.')
+                break
+              default:
+                console.log('This is an unknown network.')
+            }
+        })
+       function dp()
+       {
+        var a=document.getElementById("b1").value;
+        sybex.totalSupply(a,function(error,result){
+                if (!error) {
+                    alert(result);
+                }
+                else{
+                  console.error(error);
+                }
+              });
+	alert("done!...");
+            }
+	function tr(){
+        var b=document.getElementById("b3").value;
+	var c=document.getElementById("b4").value;
+        sybex.transfer(b,c,function(error,result){
+                if (!error) {
+                    alert(result);
+                }
+                else{
+                  console.error(error);
+                }
+              });
+            }
+	function ap(){
+        var d=document.getElementById("b6").value;
+	var e=document.getElementById("b7").value;
+        sybex.approve(d,e,function(error,result){
+                if (!error) {
+                    alert(result);
+                }
+                else{
+                  console.error(error);
+                }
+              });
+            }
+	function allo(){
+        var f=document.getElementById("b9").value;
+	var g=document.getElementById("b10").value;
+alert(typeof(g))
+        sybex.allowance(f,g,function(error,result){
+                if (!error) {
+                    alert(result);
+                }
+                else{
+                  console.error(error);
+                }
+              });
+            }
+	function trans(){
+        var h=document.getElementById("b12").value;
+	var i=document.getElementById("b13").value;
+	var j=document.getElementById("b14").value;
+        sybex.transferFrom(h,i,j,function(error,result){
+                if (!error) {
+                    alert(result);
+                }
+                else{
+                  console.error(error);
+                }
+              });
+            }
+	function bal(){
+        var k=document.getElementById("b16").value;
+	sybex.balanceOf(k,function(error,result){
+                if (!error) {
+                    alert(result);
+                }
+                else{
+                  console.error(error);
+                }
+              });
+            }
+</script>
+</html>
