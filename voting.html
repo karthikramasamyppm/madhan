@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test</title>
+    <script src="web3.min.js"></script>
+   </head>
+  <body>
+  <form style="background-color:pink">
+   <center>
+   <style>
+p {
+  text-align: center;
+  font-size: 20px;
+  margin-top:0px;
+}
+   </style>
+<p id="demo"></p>
+<script>
+var countDownDate = new Date("Mar 5, 2018 10:01:25").getTime();
+var x = setInterval(function() {
+ var now = new Date().getTime();
+   var distance = countDownDate - now;
+   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    document.getElementById("demo").innerHTML =  hours + "h "
+    + minutes + "m " + seconds + "s ";
+    if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("demo").innerHTML = "EXPIRED";
+    }
+}, 1000);
+</script>
+   <h1>Bank Wallet</h1>
+   <p>Candidate details</p>
+   <input id="b1" type="text" placeholder="name"/>
+   <input type="button" onclick="dp()" value="Details"><h1 id="b2"></h1><br>
+   <p>Voting</p>
+   <input id="b3" type="text" placeholder="candidatename"/>
+   <input type="button" onclick="tr()" value="voting"><h1 id="b4"></h1><br>
+   <p>Order</p>
+   <input type="button" onclick="ap()" value="Order"><h1 id="b5"></h1><br>
+   <p>Result</p>
+   <input type="button" onclick="allo()" value="Result"><h1 id="b6"></h1><br>
+   </center>
+   </form>
+   </body>
+   <script>
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+        var voting= web3.eth.contract([
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "result",
+		"outputs": [
+			{
+				"name": "winneris",
+				"type": "string"
+			},
+			{
+				"name": "vote",
+				"type": "uint256"
+			},
+			{
+				"name": "runneris",
+				"type": "string"
+			},
+			{
+				"name": "vote1",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "d",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "c",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "name",
+				"type": "string"
+			}
+		],
+		"name": "candidatedetails",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "order",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "whoto",
+				"type": "string"
+			}
+		],
+		"name": "voting",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	}
+]);
+     var sybox = voting.at('0x7b212d81c522124ae6f9f3cd7ab8e8f9b23a235d');
+     
+     if(!web3.isConnected()) {
+  
+        console.log("Ok");
+        
+      } else {
+        console.log("no");
+      }
+      web3.version.getNetwork((err, netId) => {
+            switch (netId) {
+              case "1":
+                console.log('This is mainnet')
+                break
+              case "2":
+                console.log('This is the deprecated Morden test network.')
+                break
+              case "3":
+                console.log('This is the ropsten test network.')
+                break
+              case "4":
+                console.log('This is the Rinkeby test network.')
+                break
+              case "42":
+                console.log('This is the Kovan test network.')
+                break
+              default:
+                console.log('This is an unknown network.')
+            }
+        })
+        function dp()
+       {
+        var a=document.getElementById("b1").value;
+        sybox.candidatedetails(a,function(error,result){
+                if (!error) {
+                    alert(result);
+                }
+                else{
+                  console.error(error);
+                }
+              });
+	alert("done!...");
+            }
+	function tr(){
+        var b=document.getElementById("b3").value;
+	sybox.voting(b,function(error,result){
+                if (!error) {
+                    alert(result);
+                }
+                else{
+                  console.error(error);
+                }
+              });
+            }
+	function ap(){
+        sybox.order(function(error,result){
+                if (!error) {
+                    alert(result);
+                }
+                else{
+                  console.error(error);
+                }
+              });
+            }
+	function allo(){
+        sybox.result(function(error,result){
+                if (!error) {
+                    alert(result);
+                }
+                else{
+                  console.error(error);
+                }
+              });
+            }
+	 if (distance < 0) {
+        clearInterval(x);
+       alert(Expired);
+    }
+</script>
+</html>
